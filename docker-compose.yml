@@ -1,0 +1,38 @@
+version: '3'
+networks: 
+  claraideia-net:
+      driver: bridge
+      driver_opts:
+        com.docker.network.enable_ipv6: "false"
+        com.docker.network.bridge.enable_ip_masquerade: "false"
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.1.0.0/24 
+services:
+  nosql:
+    image: clutteredcode/mongo-alpine:latest
+    container_name: claraideia-mongodb
+    restart: always
+    volumes:
+      -  /home/uendel/mongodb:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      claraideia-net:
+        ipv4_address: 10.1.0.2      
+  web_app:
+    image: claraideia-web
+    container_name: claraideia-webapp
+    build:
+      dockerfile: Dockerfile
+      context: .    
+    env_file:
+      - .env
+    depends_on:
+      - nosql    
+    ports:
+      - "8000:8000"
+    networks:
+      claraideia-net:
+        ipv4_address: 10.1.0.3 

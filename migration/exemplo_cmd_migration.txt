@@ -1,0 +1,1 @@
+pymongo-migrate migrate -u 'mongodb://root:1817698@localhost:27017/claraideia?authSource=admin' -m ./migration/
